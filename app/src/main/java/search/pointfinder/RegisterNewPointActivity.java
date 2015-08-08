@@ -1,6 +1,7 @@
 package search.pointfinder;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.google.gson.Gson;
@@ -26,11 +28,14 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 
+
 public class RegisterNewPointActivity extends ActionBarActivity  implements  View.OnClickListener{
 
+    Uri imageUrl = null;
     Button btnRegisterPoint;
     EditText txtPointName, txtLatitude,txtLongitude, txtZCordinate,txtYCordinate,txtXCordinate,txtDescription;
     Spinner spPointType;
+    ImageView pointImageImageView;
 
 
     @Override
@@ -45,7 +50,7 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
         txtZCordinate = (EditText)findViewById(R.id.txtZCordinate);
         txtYCordinate = (EditText)findViewById(R.id.txtYCordinate);
         txtDescription = (EditText)findViewById(R.id.txtDescription);
-
+        pointImageImageView = (ImageView)findViewById(R.id.imageViewPointImage);
         spPointType = (Spinner)findViewById(R.id.spPointType);
 
         btnRegisterPoint = (Button)findViewById(R.id.btnRegisterPoint);
@@ -55,7 +60,29 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
         spPointType.setAdapter(ar);
         spPointType.setOnItemSelectedListener(new function());
         btnRegisterPoint.setOnClickListener(this);
+
+        pointImageImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Point Image"),1);
+            }
+        });
     }
+    public void onActivityResult(int reqCode, int resCode,Intent data){
+
+        if(resCode==RESULT_OK){
+            if(reqCode==1){
+                imageUrl = data.getData();
+                pointImageImageView.setImageURI(data.getData());
+            }
+        }
+    }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,8 +120,9 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
                 String yCordinate=txtYCordinate.getText().toString();
                 String pointType = spPointType.getSelectedItem().toString();
                 String description = txtDescription.getText().toString();
+                String imageUrlStr = imageUrl.toString();
 
-                String pointJoson =pointJson(latitude, longitude, xCordinate, zCordinate, yCordinate, pointType,description,pointName);
+                String pointJoson =pointJson(latitude, longitude, xCordinate, zCordinate, yCordinate, pointType,description,pointName,imageUrlStr);
 
                 new AsyncTask<String,Void,String>( ){
 
@@ -150,7 +178,7 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
         }
     }
 
-    String pointJson(String latitude,String longitude,String xCordinate,String zCordinate,String yCordinate,String pointType ,String description, String pointName) {
+    String pointJson(String latitude,String longitude,String xCordinate,String zCordinate,String yCordinate,String pointType ,String description, String pointName,String imageUrl) {
         return "{\"Id\":\"0\","
                 + "\"Latitude\":\""+latitude+"\","
                 + "\"Longitude\":\""+longitude+"\","
@@ -159,6 +187,7 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
                 + "\"YCordinate\":\""+yCordinate+"\","
                 + "\"Name\":\""+pointName+"\","
                 + "\"Description\":\""+description+"\","
+                + "\"ImageUrl\":\""+imageUrl+"\","
                 + "\"IsActive\":true,"
                 + "\"IsDeleted\":false,"
                 + "\"PointType\":\""+pointType+"\" }";

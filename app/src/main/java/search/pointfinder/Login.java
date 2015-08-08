@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -67,14 +68,13 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
                 String passWord =  txtPassword.getText().toString();
 
 
-
-                new AsyncTask<String,Void,String>(){
+                AsyncTask<String, Void, String> response = new AsyncTask<String, Void, String>() {
 
 
                     @Override
                     protected String doInBackground(String... params) {
 
-                        String url ="http://mt28.dyndns.org:8088/PointApp/api/BasePointAPI/GetUserUsingCredential?username="+params[0]+"&password="+params[1];
+                        String url = "http://mt28.dyndns.org:8088/PointApp/api/BasePointAPI/GetUserUsingCredential?username=" + params[0] + "&password=" + params[1];
                         GetAPICall getUrl = new GetAPICall();
                         String response = null;
                         try {
@@ -88,12 +88,15 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
 
                     @Override
                     protected void onPostExecute(String result) {
-                        Gson  g = new Gson();
-                        Type t = new TypeToken<UserModel>(){}.getType();
-                        UserModel loginUser = g.fromJson(result,t);
-                        if(loginUser!=null&& loginUser.Id>0)
-                           startActivity(new Intent(Login.this,BasePointHome.class));
+                        Gson g = new Gson();
+                        Type t = new TypeToken<UserModel>() {
+                        }.getType();
+                        UserModel loginUser = g.fromJson(result, t);
+                        if (loginUser != null && loginUser.Id > 0)
+                            startActivity(new Intent(Login.this, BasePointHome.class));
                         else
+
+                            Toast.makeText(Login.this, "Can't find your information. Please check User Name or Password ", Toast.LENGTH_SHORT).show();
 
                         super.onPostExecute(result);
                     }
