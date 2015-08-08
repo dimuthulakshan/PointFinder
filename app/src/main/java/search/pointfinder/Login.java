@@ -1,5 +1,6 @@
 package search.pointfinder;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,10 +39,17 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
     Button btnLogin;
     EditText txtUserName, txtPassword;
     TextView registerLink;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage("Please wait....");
+        pd.setIndeterminate(true);
+        pd.setCancelable(true);
         setContentView(R.layout.activity_login);
 
         txtUserName =(EditText)findViewById(R.id.txtUserName);
@@ -66,6 +75,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
 
                 String userName=  txtUserName.getText().toString();
                 String passWord =  txtPassword.getText().toString();
+                pd.show();
 
 
                 AsyncTask<String, Void, String> response = new AsyncTask<String, Void, String>() {
@@ -92,8 +102,10 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
                         Type t = new TypeToken<UserModel>() {
                         }.getType();
                         UserModel loginUser = g.fromJson(result, t);
-                        if (loginUser != null && loginUser.Id > 0)
+                        if (loginUser != null && loginUser.Id > 0) {
                             startActivity(new Intent(Login.this, BasePointHome.class));
+                            pd.cancel();
+                        }
                         else
 
                             Toast.makeText(Login.this, "Can't find your information. Please check User Name or Password ", Toast.LENGTH_SHORT).show();

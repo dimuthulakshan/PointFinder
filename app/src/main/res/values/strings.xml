@@ -4,9 +4,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Login</string>
-    <string name="title_activity_register">Register New Point</string>
-    <string name="title_activity_base_point_home">BasePointHome</string>
-    <string name="title_activity_register_new_point">RegisterNewPointActivity</string>
+    <string name="title_activity_register">Add New Point</string>
+    <string name="title_activity_base_point_home">Base Point Home</string>
+    <string name="title_activity_register_new_point">New Point</string>
     <string-array name="pointtype">
         <item>A type</item>
         <item>B type</item>
@@ -14,4 +14,5 @@
     </string-array>
     <string name="title_activity_point_maps">Map</string>
     <string name="title_activity_base_point_maps">Map</string>
+    <string name="title_activity_point_home">PointHome</string>
 </resources>

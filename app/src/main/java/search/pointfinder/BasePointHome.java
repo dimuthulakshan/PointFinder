@@ -179,6 +179,9 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
         if (id == R.id.action_registerNewPoint) {
             startActivity(new Intent(BasePointHome.this,RegisterNewPointActivity.class));
         }
+        if (id == R.id.action_basePointHome) {
+            startActivity(new Intent(BasePointHome.this,PointHome.class));
+        }
 
         return super.onOptionsItemSelected(item);
     }

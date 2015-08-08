@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -146,12 +147,15 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
 
                     @Override
                     protected void onPostExecute(String result) {
-                        Gson g = new Gson();
-                        if( result=="true")
-                            startActivity(new Intent(RegisterNewPointActivity.this,BasePointHome.class));
+                        if( result.equals("true")) {
+                            startActivity(new Intent(RegisterNewPointActivity.this, BasePointHome.class));
+                        }
                         else
+                        {
+                            Toast.makeText(RegisterNewPointActivity.this, "Point registration is failed..", Toast.LENGTH_SHORT).show();
+                        }
 
-                            super.onPostExecute(result);
+
                     }
 
                 }.execute(pointJoson);
