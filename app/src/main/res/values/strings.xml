@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">PointFinder</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register New Point</string>
+    <string name="title_activity_base_point_home">BasePointHome</string>
+    <string name="title_activity_register_new_point">RegisterNewPointActivity</string>
+    <string-array name="pointtype">
+        <item>A type</item>
+        <item>B type</item>
+        <item>C type</item>
+    </string-array>
+    <string name="title_activity_point_maps">Map</string>
+    <string name="title_activity_base_point_maps">Map</string>
+</resources>
