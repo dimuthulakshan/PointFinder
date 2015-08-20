@@ -1,5 +1,7 @@
 package search.pointfinder;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -7,6 +9,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +45,7 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
     EditText txtXCordinateSearch, txtYCordinateSearch;
     List<PointModel> pointList = new ArrayList<PointModel>();
     ListView pointListView;
+    ImageView selectedpointImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +62,63 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent =new Intent(BasePointHome.this,BasePointMapsActivity.class);
-                int selectedItem =position;
-                String xvalue=  txtXCordinateSearch.getText().toString();
-                String yvalue =  txtYCordinateSearch.getText().toString();
-                intent.putExtra("xvalue",xvalue);
-                intent.putExtra("yvalue",yvalue);
-                intent.putExtra("selectedItem",selectedItem);
-                startActivity(intent);
+                selectedpointImageView = (ImageView)view.findViewById(R.id.imgPointImageViewSearchResult);
+                //Intent intent =new Intent(BasePointHome.this,BasePointMapsActivity.class);
+                //int selectedItem =position;
+                //String xvalue=  txtXCordinateSearch.getText().toString();
+                //String yvalue =  txtYCordinateSearch.getText().toString();
+                //intent.putExtra("xvalue",xvalue);
+                //intent.putExtra("yvalue",yvalue);
+                //intent.putExtra("selectedItem",selectedItem);
+               // startActivity(intent);
+                PointModel seletedPoint=  pointList.get(position);
+
+                ImageView pointImageView = (ImageView)view.findViewById(R.id.imgPointImageViewSearchResult);
+                Uri uri;
+                if(seletedPoint.ImageUrl != null && !seletedPoint.ImageUrl.isEmpty()) {
+                    uri = Uri.parse(seletedPoint.ImageUrl);
+                    pointImageView.setImageURI(uri);
+                    loadPhoto(pointImageView,200,200,position);
+
+                }
             }
         });
 
+    }
+
+    void loadPhoto(ImageView imageView, int width, final int height, final int position ) {
+
+        ImageView tempImageView = imageView;
+
+
+        AlertDialog.Builder imageDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View layout = inflater.inflate(R.layout.custom_fullimage_dialog,
+                (ViewGroup) findViewById(R.id.layout_root));
+        ImageView image = (ImageView) layout.findViewById(R.id.fullimage);
+        image.setImageDrawable(tempImageView.getDrawable());
+                                    imageDialog.setView(layout);
+                imageDialog.setPositiveButton("Go to Mapp", new DialogInterface.OnClickListener(){
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        Intent intent =new Intent(BasePointHome.this,BasePointMapsActivity.class);
+                        int selectedItem =position;
+                        String xvalue=  txtXCordinateSearch.getText().toString();
+                        String yvalue =  txtYCordinateSearch.getText().toString();
+                        intent.putExtra("xvalue",xvalue);
+                        intent.putExtra("yvalue",yvalue);
+                        intent.putExtra("selectedItem",selectedItem);
+                         startActivity(intent);
+                    }
+
+        });
+
+
+        imageDialog.create();
+        imageDialog.show();
     }
 
     @Override
