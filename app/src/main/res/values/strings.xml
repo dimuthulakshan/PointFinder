@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PointFinder</string>
+    <string name="app_name">Base Point Finder</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -14,5 +14,5 @@
     </string-array>
     <string name="title_activity_point_maps">Map</string>
     <string name="title_activity_base_point_maps">Map</string>
-    <string name="title_activity_point_home">PointHome</string>
+    <string name="title_activity_point_home">Point Home</string>
 </resources>
