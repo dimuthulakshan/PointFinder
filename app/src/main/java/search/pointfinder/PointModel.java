@@ -15,6 +15,7 @@ public class PointModel {
     public String PointType;
     public String ImageUrl;
     public String Description;
+    public String Distance;
     public boolean IsActive;
     public boolean IsDeleted;
 }

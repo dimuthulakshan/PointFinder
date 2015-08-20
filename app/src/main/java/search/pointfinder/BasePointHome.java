@@ -142,6 +142,7 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
                                     p.PointType=json_data.getString("PointType");
                                     p.ImageUrl=json_data.getString("ImageUrl");
                                     p.Description=json_data.getString("Description");
+                                    p.Distance=json_data.getString("Distance");
                                     list.add(p);
 
                                 } catch (JSONException e) {
@@ -224,6 +225,11 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
             yvalue.setText(currentPoint.YCordinate);
             TextView xvalue = (TextView)view.findViewById(R.id.txtXCordinateSearchResult);
             xvalue.setText(currentPoint.XCordinate);
+
+            TextView distance = (TextView)view.findViewById(R.id.txtPointNameDistanceResult);
+            distance.setText(currentPoint.Distance);
+
+            Log.d("List Item", currentPoint.toString());
 
             ImageView pointImageView = (ImageView)view.findViewById(R.id.imgPointImageViewSearchResult);
             Uri uri;
