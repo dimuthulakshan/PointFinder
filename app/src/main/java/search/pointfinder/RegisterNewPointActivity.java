@@ -1,10 +1,17 @@
 package search.pointfinder;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,9 +32,16 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Type;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RegisterNewPointActivity extends ActionBarActivity  implements  View.OnClickListener{
@@ -37,6 +51,10 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
     EditText txtPointName, txtLatitude,txtLongitude, txtZCordinate,txtYCordinate,txtXCordinate,txtDescription;
     Spinner spPointType;
     ImageView pointImageImageView;
+    private static final  String baseUrlForImage= "http://mt28.dyndns.org:8088/PointApp/images/";
+    private String imageData;
+
+
 
 
     @Override
@@ -77,9 +95,104 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
         if(resCode==RESULT_OK){
             if(reqCode==1){
                 imageUrl = data.getData();
-                pointImageImageView.setImageURI(data.getData());
+                Uri selectedImageUri = data.getData();
+                if (Build.VERSION.SDK_INT < 19) {
+                    String selectedImagePath = getPath(selectedImageUri);
+                    Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
+                    SetImage(bitmap);
+                } else {
+                    ParcelFileDescriptor parcelFileDescriptor;
+                    try {
+                        parcelFileDescriptor = getContentResolver().openFileDescriptor(selectedImageUri, "r");
+                        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+                        parcelFileDescriptor.close();
+                        SetImage(image);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
             }
         }
+    }
+    private void SetImage(Bitmap image) {
+        this.pointImageImageView.setImageBitmap(image);
+        // upload
+        imageData = encodeTobase64(image);
+        // upload
+        String imageData = encodeTobase64(image);
+
+
+        new AsyncTask<String,Void,String>( ){
+            @Override
+            protected String doInBackground(String... params) {
+
+                String pointJosonObj =params[0];
+
+                String url ="http://mt28.dyndns.org:8088/PointApp/api/BasePointAPI/InsertPoint";
+                PostAPICall postUrl = new PostAPICall();
+                String response = null;
+                try {
+                    response = postUrl.post(url, pointJosonObj );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Response", response);
+                return response;
+            }
+            @Override
+            protected void onPostExecute(String result) {
+                if( result.equals("true")) {
+                    startActivity(new Intent(RegisterNewPointActivity.this, BasePointHome.class));
+                }
+                else
+                {
+                    Toast.makeText(RegisterNewPointActivity.this, "Point registration is failed..", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }.execute(imageData);
+
+
+
+
+
+
+    }
+
+    public static String encodeTobase64(Bitmap image) {
+        System.gc();
+
+        if (image == null)return null;
+
+        Bitmap immagex = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+        byte[] b = baos.toByteArray();
+
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT); // min minSdkVersion 8
+
+        return imageEncoded;
+    }
+
+
+    public String getPath(Uri uri) {
+        if( uri == null ) {
+            return null;
+        }
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return uri.getPath();
     }
 
 
