@@ -1,8 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context="search.pointfinder.BasePointHome">
-    <item android:id="@+id/action_registerNewPoint" android:title="@string/title_activity_register"
+    <item android:id="@+id/action_registerNewPoint" android:title="@string/title_activity_register_new_point"
         android:orderInCategory="100" app:showAsAction="collapseActionView" />
     <item android:id="@+id/action_basePointHome" android:title="@string/title_activity_point_home"
+        android:orderInCategory="100" app:showAsAction="collapseActionView" />
+    <item android:id="@+id/action_logOut" android:title="@string/title_activity_logout"
         android:orderInCategory="100" app:showAsAction="collapseActionView" />
 </menu>

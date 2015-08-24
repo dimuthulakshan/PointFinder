@@ -72,6 +72,10 @@
             android:name=".PointHome"
             android:label="@string/title_activity_point_home" >
         </activity>
+        <activity
+            android:name=".PointEditView"
+            android:label="@string/title_activity_point_edit_view" >
+        </activity>
     </application>
 
 </manifest>

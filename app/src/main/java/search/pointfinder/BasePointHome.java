@@ -1,6 +1,7 @@
 package search.pointfinder;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -48,6 +49,7 @@ import java.util.List;
 public class BasePointHome extends ActionBarActivity implements  View.OnClickListener {
 
     Button btnPointSearch;
+    private ProgressDialog pd;
     EditText txtXCordinateSearch, txtYCordinateSearch;
     List<PointModel> pointList = new ArrayList<PointModel>();
     ListView pointListView;
@@ -57,7 +59,11 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_point_home);
-
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage("Please wait....");
+        pd.setIndeterminate(true);
+        pd.setCancelable(true);
 
         txtXCordinateSearch =(EditText)findViewById(R.id.txtXCordinateSearch);
         txtYCordinateSearch=(EditText)findViewById(R.id.txtYCordinateSearch);
@@ -87,6 +93,7 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
                     loadPhoto(pointImageView,200,200,position);
 
                 }
+
             }
         });
 
@@ -100,12 +107,11 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
         AlertDialog.Builder imageDialog = new AlertDialog.Builder(this);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        View layout = inflater.inflate(R.layout.custom_fullimage_dialog,
-                (ViewGroup) findViewById(R.id.layout_root));
+        View layout = inflater.inflate(R.layout.custom_fullimage_dialog, (ViewGroup) findViewById(R.id.layout_root));
         ImageView image = (ImageView) layout.findViewById(R.id.fullimage);
         image.setImageDrawable(tempImageView.getDrawable());
                                     imageDialog.setView(layout);
-                imageDialog.setPositiveButton("Go to Mapp", new DialogInterface.OnClickListener(){
+                imageDialog.setPositiveButton("Go to Map", new DialogInterface.OnClickListener(){
 
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -138,7 +144,7 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
 
         switch (v.getId()) {
             case R.id.btnPointSearch:
-
+                pd.show();
                 String xvalue=  txtXCordinateSearch.getText().toString();
                 String yvalue =  txtYCordinateSearch.getText().toString();
 
@@ -161,9 +167,6 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
 
                         @Override
                         protected void onPostExecute(String result) {
-                            Gson g = new Gson();
-                            Type t = new TypeToken<PointModel>() {
-                            }.getType();
 
                             try {
                                 JSONArray array = new JSONArray(result);
@@ -173,6 +176,8 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+                            pd.cancel();
 
 
 
@@ -242,6 +247,10 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
             startActivity(new Intent(BasePointHome.this,PointHome.class));
         }
 
+        if(id==R.id.action_logOut){
+            startActivity(new Intent(BasePointHome.this,Login.class));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -290,11 +299,17 @@ public class BasePointHome extends ActionBarActivity implements  View.OnClickLis
             Log.d("List Item", currentPoint.toString());
 
             ImageView pointImageView = (ImageView)view.findViewById(R.id.imgPointImageViewSearchResult);
-            Uri uri;
-            if(currentPoint.ImageUrl != null && !currentPoint.ImageUrl.isEmpty()) {
-                uri = Uri.parse(currentPoint.ImageUrl);
-                pointImageView.setImageURI(uri);
-            }
+
+            //try {
+             //   Uri uri;
+             //   if(currentPoint.ImageUrl != null && !currentPoint.ImageUrl.isEmpty()) {
+              //      uri = Uri.parse(currentPoint.ImageUrl);
+              //      pointImageView.setImageURI(uri);
+             //   }
+           // }catch (Exception e) {
+            //    e.printStackTrace();
+           // }
+
             return view;
 
         }

@@ -41,7 +41,7 @@ public class BasePointMapsActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-         selectedItem =this.getIntent().getIntExtra("selectedItem",0);
+        selectedItem =this.getIntent().getIntExtra("selectedItem",0);
         String xvalue=  this.getIntent().getStringExtra("xvalue");
         String yvalue =  this.getIntent().getStringExtra("yvalue");
 

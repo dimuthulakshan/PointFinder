@@ -1,5 +1,6 @@
 package search.pointfinder;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -47,6 +48,7 @@ import java.util.List;
 public class RegisterNewPointActivity extends ActionBarActivity  implements  View.OnClickListener{
 
     Uri imageUrl = null;
+    private ProgressDialog pd;
     Button btnRegisterPoint;
     EditText txtPointName, txtLatitude,txtLongitude, txtZCordinate,txtYCordinate,txtXCordinate,txtDescription;
     Spinner spPointType;
@@ -89,6 +91,12 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
                 startActivityForResult(Intent.createChooser(intent,"Select Point Image"),1);
             }
         });
+
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage("Please wait....");
+        pd.setIndeterminate(true);
+        pd.setCancelable(true);
     }
     public void onActivityResult(int reqCode, int resCode,Intent data){
 
@@ -156,11 +164,6 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
 
         }.execute(imageData);
 
-
-
-
-
-
     }
 
     public static String encodeTobase64(Bitmap image) {
@@ -226,6 +229,8 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
 
         switch (v.getId()) {
             case R.id.btnRegisterPoint:
+                pd.show();
+
                 String pointName =txtPointName.getText().toString();
                 String latitude=txtLatitude.getText().toString();
                 String longitude=txtLongitude.getText().toString();
@@ -255,6 +260,7 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
                             e.printStackTrace();
                         }
                         Log.d("Response", response);
+                        pd.cancel();
                         return response;
                     }
 
@@ -278,7 +284,7 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
 
     }
 
-    public class PostAPICall {
+    private class PostAPICall {
         final MediaType JSON
                 = MediaType.parse("application/json; charset=utf-8");
 
@@ -304,6 +310,8 @@ public class RegisterNewPointActivity extends ActionBarActivity  implements  Vie
                 + "\"YCordinate\":\""+yCordinate+"\","
                 + "\"Name\":\""+pointName+"\","
                 + "\"Description\":\""+description+"\","
+                + "\"Distance\":\"\","
+                + "\"ImageData\":\"\","
                 + "\"ImageUrl\":\""+imageUrl+"\","
                 + "\"IsActive\":true,"
                 + "\"IsDeleted\":false,"
