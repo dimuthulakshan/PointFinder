@@ -143,7 +143,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
     }
 
 
-    public class GetAPICall {
+    private class GetAPICall {
         OkHttpClient client = new OkHttpClient();
 
         String run(String url) throws IOException {

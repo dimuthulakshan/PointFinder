@@ -214,11 +214,12 @@ public class PointHome extends ActionBarActivity  implements  View.OnClickListen
 
                                     String Id =params[0];
 
-                                    String url ="http://mt28.dyndns.org:8088/PointApp/api/BasePointAPI/DeletePoint";
-                                    PostAPICall postUrl = new PostAPICall();
+                                    String url ="http://mt28.dyndns.org:8088/PointApp/api/BasePointAPI/DeletePoint?id="+ params[0];
+
+                                    GetAPICall getUrl = new GetAPICall();
                                     String response = null;
                                     try {
-                                        response = postUrl.post(url, Id );
+                                        response = getUrl.run(url);
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
@@ -321,6 +322,8 @@ public class PointHome extends ActionBarActivity  implements  View.OnClickListen
             return response.body().string();
         }
     }
+
+
 
 
 
